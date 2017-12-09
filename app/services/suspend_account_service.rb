@@ -17,8 +17,8 @@ class SuspendAccountService < BaseService
   end
 
   def purge_content
-    @account.statuses.reorder(nil).find_in_batches(batch_size: 100).with_index(1) do |statuses, batch_index|
-      BatchedRemoveStatusService.new.call(statuses, batch_index)
+    @account.statuses.reorder(nil).find_in_batches do |statuses|
+      BatchedRemoveStatusService.new.call(statuses)
     end
 
     [
@@ -50,3 +50,4 @@ class SuspendAccountService < BaseService
     association.in_batches.destroy_all
   end
 end
+
