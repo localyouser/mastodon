@@ -678,12 +678,9 @@ ja:
 
       <p>オリジナルの出典 <a href="https://github.com/discourse/discourse">Discourse privacy policy</a>.</p>
     title: "%{instance} 利用規約・プライバシーポリシー"
-<<<<<<< HEAD
   themes:
     default: Mastodon
     custom: MSX
-=======
->>>>>>> v2.1.0rc3
   time:
     formats:
       default: "%Y年%m月%d日 %H:%M"
