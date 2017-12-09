@@ -1,24 +1,19 @@
 # frozen_string_literal: true
 
 class SuspendAccountService < BaseService
-  def call(account, **options)
+  def call(account, remove_user = false)
     @account = account
-    @options = options
 
-    purge_user!
-    purge_profile!
-    purge_content!
-    unsubscribe_push_subscribers!
+    purge_user if remove_user
+    purge_profile
+    purge_content
+    unsubscribe_push_subscribers
   end
 
   private
 
-  def purge_user!
-    if @options[:remove_user]
-      @account.user&.destroy
-    else
-      @account.user&.disable!
-    end
+  def purge_user
+    @account.user.destroy
   end
 
   def purge_content
@@ -38,7 +33,7 @@ class SuspendAccountService < BaseService
     end
   end
 
-  def purge_profile!
+  def purge_profile
     @account.suspended    = true
     @account.display_name = ''
     @account.note         = ''
@@ -47,7 +42,7 @@ class SuspendAccountService < BaseService
     @account.save!
   end
 
-  def unsubscribe_push_subscribers!
+  def unsubscribe_push_subscribers
     destroy_all(@account.subscriptions)
   end
 
@@ -55,3 +50,4 @@ class SuspendAccountService < BaseService
     association.in_batches.destroy_all
   end
 end
+
