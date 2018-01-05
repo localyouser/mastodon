@@ -16,11 +16,9 @@ class SuspendAccountService < BaseService
     @account.user.destroy
   end
 
-  def purge_content!
-    ActivityPub::RawDistributionWorker.perform_async(delete_actor_json, @account.id) if @account.local?
-
-    @account.statuses.reorder(nil).find_in_batches do |statuses|
-      BatchedRemoveStatusService.new.call(statuses)
+  def purge_content
+    @account.statuses.reorder(nil).find_in_batches(batch_size: 100).with_index(1) do |statuses, batch_index|
+      BatchedRemoveStatusService.new.call(statuses, batch_index)
     end
 
     [

@@ -40,8 +40,10 @@ class BatchedRemoveStatusService < BaseService
       batch_salmon_slaps(status) if status.local?
     end
 
-    Pubsubhubbub::RawDistributionWorker.push_bulk(@stream_entry_batches) { |batch| batch }
-    NotificationWorker.push_bulk(@salmon_batches) { |batch| batch }
+    at = ((@stream_entry_batches.size + @salmon_batches.size + @activity_json_batches.size) * batch_index).seconds.after.to_i
+    Sidekiq::Client.push_bulk('class' => Pubsubhubbub::RawDistributionWorker, 'args' => @stream_entry_batches, 'at' => at)
+    Sidekiq::Client.push_bulk('class' => NotificationWorker, 'args' => @salmon_batches, 'at' => at)
+    Sidekiq::Client.push_bulk('class' => ActivityPub::DeliveryWorker, 'args' => @activity_json_batches, 'at' => at)
   end
 
   private
