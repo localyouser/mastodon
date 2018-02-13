@@ -1,3 +1,5 @@
 default: styles/application.scss
 custom: styles/custom.scss
+transparent: styles/application_transparent.scss
+
 
