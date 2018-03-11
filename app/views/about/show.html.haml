@@ -7,20 +7,10 @@
   = javascript_pack_tag 'about', integrity: true, crossorigin: 'anonymous'
   = render partial: 'shared/og'
 
-<<<<<<< HEAD
-.landing-page
-  .header-wrapper
-    .mascot-container
-      = image_tag asset_pack_path('social.bluecore.net_img.jpg'), alt: '', role: 'presentation', class: 'mascot'
-
-    .header
-      .container.links
-=======
 .landing-page.alternative
   .container
     .grid
       .column-0
->>>>>>> v2.3.0
         .brand
           = link_to root_url do
             = image_tag asset_pack_path('logo_full.svg'), alt: 'Mastodon'
@@ -46,7 +36,7 @@
       - if Setting.timeline_preview
         .column-2
           .landing-page__hero
-            = image_tag @instance_presenter.hero&.file&.url || @instance_presenter.thumbnail&.file&.url || asset_pack_path('preview.jpg'), alt: @instance_presenter.site_title
+            = image_tag @instance_presenter.hero&.file&.url || @instance_presenter.thumbnail&.file&.url || asset_pack_path('social.bluecore.net_img.jpg'), alt: @instance_presenter.site_title
 
           .landing-page__information
             .landing-page__short-description
