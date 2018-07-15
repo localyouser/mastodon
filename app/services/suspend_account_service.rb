@@ -33,10 +33,11 @@ class SuspendAccountService < BaseService
     end
   end
 
-  def purge_profile
-    @account.suspended    = true
-    @account.display_name = ''
-    @account.note         = ''
+  def purge_profile!
+    @account.suspended      = true
+    @account.display_name   = ''
+    @account.note           = ''
+    @account.statuses_count = 0
     @account.avatar.destroy
     @account.header.destroy
     @account.save!
