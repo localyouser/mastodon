@@ -415,15 +415,9 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.6)
       pry (>= 0.10.4)
-<<<<<<< HEAD
-    public_suffix (3.0.2)
-    puma (3.12.0)
-    pundit (1.1.0)
-=======
     public_suffix (3.0.3)
     puma (3.12.0)
     pundit (2.0.0)
->>>>>>> v2.6.1
       activesupport (>= 3.0.0)
     raabro (1.1.6)
     rack (2.0.5)
@@ -733,13 +727,8 @@ DEPENDENCIES
   pry-byebug (~> 3.6)
   pry-rails (~> 0.3)
   puma (~> 3.12)
-<<<<<<< HEAD
-  pundit (~> 1.1)
-  rack-attack (~> 5.2)
-=======
   pundit (~> 2.0)
   rack-attack (~> 5.4)
->>>>>>> v2.6.1
   rack-cors (~> 1.0)
   rails (~> 5.2.1)
   rails-controller-testing (~> 1.0)
@@ -780,8 +769,4 @@ RUBY VERSION
    ruby 2.5.3p105
 
 BUNDLED WITH
-<<<<<<< HEAD
-   1.16.5
-=======
    1.16.6
->>>>>>> v2.6.1
