@@ -9,11 +9,15 @@ module Mastodon
     end
 
     def minor
-      5
+      6
     end
 
     def patch
+<<<<<<< HEAD
       2
+=======
+      1
+>>>>>>> v2.6.1
     end
 
     def pre
