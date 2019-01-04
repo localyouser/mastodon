@@ -9,8 +9,9 @@ class BatchedRemoveStatusService < BaseService
   # Remove statuses from home feeds
   # Push delete events to streaming API for home feeds and public feeds
   # @param [Status] statuses A preferably batched array of statuses
-  # @param [Integer] batch_index
-  def call(statuses, batch_index = 1)
+  # @param [Hash] options
+  # @option [Boolean] :skip_side_effects
+  def call(statuses, **options)
     statuses = Status.where(id: statuses.map(&:id)).includes(:account, :stream_entry).flat_map { |status| [status] + status.reblogs.includes(:account, :stream_entry).to_a }
 
     @mentions = statuses.each_with_object({}) { |s, h| h[s.id] = s.active_mentions.includes(:account).to_a }
@@ -26,6 +27,8 @@ class BatchedRemoveStatusService < BaseService
       status.mark_for_mass_destruction!
       status.destroy
     end
+
+    return if options[:skip_side_effects]
 
     # Batch by source account
     statuses.group_by(&:account_id).each_value do |account_statuses|
@@ -43,10 +46,8 @@ class BatchedRemoveStatusService < BaseService
       batch_salmon_slaps(status) if status.local?
     end
 
-    at = ((@stream_entry_batches.size + @salmon_batches.size + @activity_json_batches.size) * batch_index).seconds.after.to_i
-    Sidekiq::Client.push_bulk('class' => Pubsubhubbub::RawDistributionWorker, 'args' => @stream_entry_batches, 'at' => at)
-    Sidekiq::Client.push_bulk('class' => NotificationWorker, 'args' => @salmon_batches, 'at' => at)
-    Sidekiq::Client.push_bulk('class' => ActivityPub::DeliveryWorker, 'args' => @activity_json_batches, 'at' => at)
+    Pubsubhubbub::RawDistributionWorker.push_bulk(@stream_entry_batches) { |batch| batch }
+    NotificationWorker.push_bulk(@salmon_batches) { |batch| batch }
   end
 
   private
